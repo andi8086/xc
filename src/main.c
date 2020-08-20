@@ -4,7 +4,7 @@
 #include <xc_win.h>	
 #include <sys/queue.h>
 
-struct winlist_entry *g_window;
+struct winlist_entry *g_window, *w2, *w3;
 
 
 void init_colors(void)
@@ -29,7 +29,9 @@ int main(int argc, char *argv[])
 	clear();
 	refresh();
 
-	g_window = win_create(LINES-1, COLS-1, 0, 0);
+	g_window = win_create(15, 8, 3, 3);
+	w2 = win_create(10, 20, 5, 5);
+	w3 = win_create(13, 13, 6, 7);
 
 	int x, y;
 
@@ -38,9 +40,22 @@ int main(int argc, char *argv[])
 	mvaddstr(y, x, msg);
 
 
-	getch();
+	int c;
+	while ((c = win_getch()) != 'q') {
+		if (c == 'n') {
+			win_focus_next();
+		}
+		if (c == 'p') {
+			win_focus_prev();
+		}
+		win_redraw_list();
+		refresh();
+	}
 
 	win_destroy(g_window);
+	win_destroy(w2);
+	win_destroy(w3);
+
 	endwin();
 
 	return EXIT_SUCCESS;
