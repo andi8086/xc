@@ -13,7 +13,8 @@ typedef struct _XC_WIN {
 
 struct winlist_entry {
 	XC_WIN *w;
-	SLIST_ENTRY(winlist_entry) entries;
+	bool has_focus;
+	LIST_ENTRY(winlist_entry) entries;
 };
 
 

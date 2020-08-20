@@ -1,8 +1,8 @@
 #include <stdlib.h>
 #include <xc_win.h>
 
-SLIST_HEAD(swinlist_head, winlist_entry) winlist_head =
-	SLIST_HEAD_INITIALIZER(winlist_head);
+LIST_HEAD(swinlist_head, winlist_entry) winlist_head =
+	LIST_HEAD_INITIALIZER(winlist_head);
 
 
 struct winlist_entry *win_create(int height, int width, int y, int x)
@@ -37,7 +37,9 @@ struct winlist_entry *win_create(int height, int width, int y, int x)
 	wrefresh(tmp->win);
 
 	we->w = tmp;
-	SLIST_INSERT_HEAD(&winlist_head, we, entries);
+	LIST_INSERT_HEAD(&winlist_head, we, entries);
+
+	we->has_focus = false;
 
 	return we;
 }
@@ -52,9 +54,29 @@ void win_destroy(struct winlist_entry *we)
 	delwin(we->w->win);
 	free(we->w);
 	
-	SLIST_REMOVE(&winlist_head, we, winlist_entry, entries);	
+	LIST_REMOVE(we, entries);	
 	free(we);
 
 	refresh();
 }
 
+
+void win_updatelist(void)
+{
+	struct winlist_entry *we;
+	WINDOW *focused_win;
+
+	focused_win = NULL;
+
+	LIST_FOREACH(we, &winlist_head, entries) {
+		if (!we->has_focus) {
+			wrefresh(we->w->win);	
+		} else {
+			focused_win = we->w->win;
+		}
+	}	
+
+	if (focused_win) {			
+		wrefresh(focused_win);
+	}	
+}
