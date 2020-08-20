@@ -2,6 +2,7 @@
 #define __XC_H__
 
 #include <config.h>
+#include <sys/queue.h>
 
 #ifdef HAVE_NCURSES_H
 #include <ncurses.h>

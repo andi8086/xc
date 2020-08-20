@@ -3,14 +3,21 @@
 
 #include <xc.h>
 
-typedef struct {
+typedef struct _XC_WIN {
 	char *name;	/* name UTF-8 */
 	int x, y;	/* location */
 	int w, h;	/* dimensions */
 	WINDOW *win;	/* ncurses window handle */
 } XC_WIN;
 
-XC_WIN *win_create(int height, int width, int y, int x);
-void win_destroy(XC_WIN *xc_win);
+
+struct winlist_entry {
+	XC_WIN *w;
+	SLIST_ENTRY(winlist_entry) entries;
+};
+
+
+struct winlist_entry *win_create(int height, int width, int y, int x);
+void win_destroy(struct winlist_entry *we);
 
 #endif

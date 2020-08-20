@@ -2,8 +2,18 @@
 #include <string.h>
 #include <xc.h>
 #include <xc_win.h>	
+#include <sys/queue.h>
 
-XC_WIN *g_window;
+struct winlist_entry *g_window;
+
+
+void init_colors(void)
+{
+	init_pair(1, COLOR_BLUE, COLOR_BLACK);
+	init_pair(2, COLOR_GREEN, COLOR_BLACK);
+	init_pair(3, COLOR_CYAN, COLOR_BLACK);
+	init_pair(4, COLOR_RED, COLOR_BLACK);
+}
 
 
 int main(int argc, char *argv[])
@@ -13,6 +23,8 @@ int main(int argc, char *argv[])
 	initscr();
 	cbreak();
 	noecho();
+
+	init_colors();
 
 	clear();
 	refresh();
