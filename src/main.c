@@ -1,27 +1,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <xc.h>
-	
+#include <xc_win.h>	
 
-WINDOW *g_window;
-
-
-WINDOW *win_create(int height, int width, int y, int x)
-{
-	WINDOW *win;
-	win = newwin(height, width, y, x);
-	box(win, 0, 0);
-	wrefresh(win);
-	return win;
-}
-
-
-void win_destroy(WINDOW *win)
-{
-	delwin(win);
-	refresh();
-}
-
+XC_WIN *g_window;
 
 
 int main(int argc, char *argv[])
