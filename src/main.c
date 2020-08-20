@@ -18,7 +18,7 @@ void init_colors(void)
 
 int main(int argc, char *argv[])
 {
-	const char *msg = "Press any key to quit";
+	const char *msg = "Press 'q' to quit, 'n': next, 'p': prev window";
 
 	initscr();
 	cbreak();
@@ -28,7 +28,6 @@ int main(int argc, char *argv[])
 
 	clear();
 	refresh();
-
 	g_window = win_create(15, 8, 3, 3);
 	w2 = win_create(10, 20, 5, 5);
 	w3 = win_create(13, 13, 6, 7);
@@ -38,7 +37,7 @@ int main(int argc, char *argv[])
 	x = (COLS - strlen(msg)) / 2 - 1;
 	y = LINES / 2 - 1;
 	mvaddstr(y, x, msg);
-
+	refresh();
 
 	int c;
 	while ((c = win_getch()) != 'q') {
