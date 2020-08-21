@@ -9,10 +9,15 @@ struct winlist_entry *g_window, *w2, *w3;
 
 void init_colors(void)
 {
+	start_color();
 	init_pair(1, COLOR_BLUE, COLOR_BLACK);
 	init_pair(2, COLOR_GREEN, COLOR_BLACK);
 	init_pair(3, COLOR_CYAN, COLOR_BLACK);
 	init_pair(4, COLOR_RED, COLOR_BLACK);
+
+	init_pair(5, COLOR_WHITE, COLOR_BLUE);
+	init_pair(6, COLOR_WHITE, COLOR_RED);
+	init_pair(7, COLOR_BLACK, COLOR_GREEN);
 }
 
 
@@ -24,6 +29,14 @@ int main(int argc, char *argv[])
 	cbreak();
 	noecho();
 
+	if (!has_colors()) {
+		addstr("Cannot use colors.\n");
+		getch();
+	}
+	if (!can_change_color()) {
+		addstr("Cannot change colors.\n");
+		getch();
+	}
 	init_colors();
 
 	clear();
@@ -31,6 +44,9 @@ int main(int argc, char *argv[])
 	g_window = win_create(15, 8, 3, 3);
 	w2 = win_create(10, 20, 5, 5);
 	w3 = win_create(13, 13, 6, 7);
+	//win_set_color(g_window, 5);
+	//win_set_color(w2, 6);
+	win_set_color(w3, 3);
 
 	int x, y;
 

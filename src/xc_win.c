@@ -10,7 +10,7 @@ struct winlist_head *headp;
 struct winlist_entry *focused_win;
 
 
-struct winlist_entry *win_create(int height, int width, int y, int x)
+struct winlist_entry *win_create_c(int height, int width, int y, int x, int cp)
 {
 	XC_WIN *tmp;
 
@@ -38,9 +38,11 @@ struct winlist_entry *win_create(int height, int width, int y, int x)
 	tmp->y = y;
 	tmp->h = height;
 	tmp->w = width;
+	tmp->cp = cp;
+	wbkgd(tmp->win, COLOR_PAIR(tmp->cp));
+	wclear(tmp->win);
 	box(tmp->win, 0, 0);
 	wrefresh(tmp->win);
-
 	we->w = tmp;
 	LIST_INSERT_HEAD(&winlist_head, we, entries);
 
@@ -52,6 +54,12 @@ struct winlist_entry *win_create(int height, int width, int y, int x)
 	}
 
 	return we;
+}
+
+
+struct winlist_entry *win_create(int height, int width, int y, int x)
+{
+	return win_create_c(height, width, y, x, 1);
 }
 
 
@@ -79,7 +87,6 @@ void win_redraw_list(void)
 	LIST_FOREACH(we, &winlist_head, entries) {
 		if (!we->has_focus) {
 			wrefresh(we->w->win);
-			// redrawwin(we->w->win);
 		}
 	}
 
@@ -140,4 +147,15 @@ int win_getch(void)
 		return wgetch(focused_win->w->win);
 	}
 	return 0;
+}
+
+
+void win_set_color(struct winlist_entry *e, int cp)
+{
+	if (!e || !e->w || !e->w->win) {
+		return;
+	}
+	e->w->cp = cp;
+	wbkgd(e->w->win, COLOR_PAIR(cp));
+	touchwin(e->w->win);
 }

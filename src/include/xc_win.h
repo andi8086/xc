@@ -7,6 +7,7 @@ typedef struct _XC_WIN {
 	char *name;	/* name UTF-8 */
 	int x, y;	/* location */
 	int w, h;	/* dimensions */
+	int cp;		/* color pair */
 	WINDOW *win;	/* ncurses window handle */
 } XC_WIN;
 
@@ -36,10 +37,13 @@ struct winlist_entry {
 
 
 struct winlist_entry *win_create(int height, int width, int y, int x);
+struct winlist_entry *win_create_c(int height, int width, int y, int x,
+	int cp);
 void win_destroy(struct winlist_entry *we);
 void win_focus_next(void);
 void win_focus_prev(void);
 void win_redraw_list(void);
+void win_set_color(struct winlist_entry *w, int cp);
 int win_getch(void);
 
 #endif
