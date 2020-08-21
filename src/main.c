@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <xc.h>
-#include <xc_win.h>	
+#include <xc_win.h>
 #include <sys/queue.h>
 
 struct winlist_entry *g_window, *w2, *w3;

@@ -17,7 +17,7 @@ struct winlist_entry *win_create(int height, int width, int y, int x)
 	tmp = (XC_WIN *)malloc(sizeof(XC_WIN));
 	if (!tmp) {
 		return NULL;
-	}	
+	}
 
 	tmp->win = newwin(height, width, y, x);
 	if (!tmp->win) {
@@ -57,14 +57,14 @@ struct winlist_entry *win_create(int height, int width, int y, int x)
 
 void win_destroy(struct winlist_entry *we)
 {
-	
+
 	if (!we || !we->w || !we->w->win) {
 		return;
 	}
 	delwin(we->w->win);
 	free(we->w);
-	
-	LIST_REMOVE(we, entries);	
+
+	LIST_REMOVE(we, entries);
 	free(we);
 
 	refresh();
@@ -78,15 +78,15 @@ void win_redraw_list(void)
 
 	LIST_FOREACH(we, &winlist_head, entries) {
 		if (!we->has_focus) {
-			wrefresh(we->w->win);	
+			wrefresh(we->w->win);
 			// redrawwin(we->w->win);
-		}	
-	}	
+		}
+	}
 
-	if (focused_win) {			
+	if (focused_win) {
 		wrefresh(focused_win->w->win);
 		redrawwin(focused_win->w->win);
-	}	
+	}
 }
 
 
@@ -96,7 +96,7 @@ void win_focus_next(void)
 
 	focused_win->has_focus = false;
 
-	we = LIST_NEXT(focused_win, entries);	
+	we = LIST_NEXT(focused_win, entries);
 	if (we) {
 		focused_win = we;
 	} else {
@@ -105,7 +105,7 @@ void win_focus_next(void)
 			focused_win = we;
 		}
 	}
-	
+
 	focused_win->has_focus = true;
 }
 
