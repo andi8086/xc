@@ -9,5 +9,7 @@
 
 int mbswidth(char *string);
 int strncpy_u8(char *dest, char *src, size_t len);
+char *strabbrev_u8(char *str, int maxwidth);
+
 
 #endif

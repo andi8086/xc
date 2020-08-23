@@ -1,8 +1,10 @@
+#define _XOPEN_SOURCE_EXTENDED
 #include <stdlib.h>
 #include <string.h>
 #include <xc.h>
 #include <xc_win.h>
 #include <sys/queue.h>
+#include <locale.h>
 
 struct winlist_entry *g_window, *w2, *w3;
 
@@ -23,7 +25,9 @@ void init_colors(void)
 
 int main(int argc, char *argv[])
 {
-	const char *msg = "Press 'q' to quit, 'n': next, 'p': prev window";
+        setlocale(LC_ALL, "en_US.UTF-8");
+//	const char *msg = "Press 'q' to quit, 'n': next, 'p': prev window";
+        const char *msg = "\xe2\x9c\x93"; //"五笔输入法";
 
 	initscr();
 	cbreak();
@@ -44,11 +48,10 @@ int main(int argc, char *argv[])
 	g_window = win_create(15, 8, 3, 3);
 	w2 = win_create(10, 20, 5, 5);
 	w3 = win_create(13, 13, 6, 7);
-	//win_set_color(g_window, 5);
-	//win_set_color(w2, 6);
 	win_set_color(w3, 3);
+        win_set_title(g_window, "abcdefghijklmnopqrstuvwxzy");
 	win_set_title(w2, "hallo");
-	win_set_title(w3, "blubb");
+	win_set_title(w3, "文字");
 	int x, y;
 
 	x = (COLS - strlen(msg)) / 2 - 1;
@@ -57,6 +60,8 @@ int main(int argc, char *argv[])
 	refresh();
 	curs_set(0);
 	int c;
+	win_redraw_list();
+	refresh();
 	while ((c = win_getch()) != 'q') {
 		switch(c) {
 		case 'n':

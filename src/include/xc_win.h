@@ -2,6 +2,7 @@
 #define __XC_WIN_H__
 
 #include <xc.h>
+#include <stddef.h>
 
 typedef struct _XC_WIN {
 	char *title;	/* title UTF-8 */
@@ -21,7 +22,6 @@ struct winlist_entry {
 #ifndef LIST_PREV
 
 /* missing LIST_PREV macro */
-#define offsetof(TYPE, MEMBER) ((size_t) &((TYPE *)0)->MEMBER)
 
 #define __containerof(ptr, type, member) ({	\
 	const typeof( ((type *)0)->member ) *__mptr = (ptr);	\

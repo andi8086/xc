@@ -11,6 +11,7 @@ struct winlist_head *headp;
 
 struct winlist_entry *focused_win;
 
+static void win_draw_title(struct winlist_entry *w);
 
 struct winlist_entry *win_create_c(int height, int width, int y, int x, int cp)
 {
@@ -105,7 +106,7 @@ void win_focus_next(void)
 	struct winlist_entry *we;
 
 	focused_win->has_focus = false;
-	win_draw_titlebar(focused_win);
+	win_draw_title(focused_win);
 
 	we = LIST_NEXT(focused_win, entries);
 	if (we) {
@@ -126,7 +127,7 @@ void win_focus_prev(void)
 	struct winlist_entry *we, *tmp;
 
 	focused_win->has_focus = false;
-	win_draw_titlebar(focused_win);
+	win_draw_title(focused_win);
 
 	we = LIST_PREV(focused_win, &winlist_head, winlist_entry, entries);
 	if (we) {
@@ -185,16 +186,23 @@ void win_set_title(struct winlist_entry *e, char *title)
 }
 
 
-void win_draw_titlebar(struct winlist_entry *w)
+static void win_draw_title(struct winlist_entry *w)
 {
-	if (!w || !w->w || !w->w->win) {
+	if (!w->w->title) {
 		return;
 	}
-	if (w->w->title) {
-		int l = mbswidth(w->w->title);
-		int b = strlen(w->w->title);
-		// char *dtitle = strabbrev_u8(w->w->title, w->w->w);
-		mvwaddstr(w->w->win, 0, 0, w->w->title);
+	char *dtitle = strabbrev_u8(w->w->title, w->w->w);
+	if (!dtitle) {
+		return;
+	}
+	if (w->has_focus) {
+		wattron(w->w->win, COLOR_PAIR(5));
+	}
+	mvwaddstr(w->w->win,
+		0, (w->w->w - mbswidth(dtitle))/2, dtitle);
+	free(dtitle);
+	if (w->has_focus) {
+		wattroff(w->w->win, COLOR_PAIR(5));
 	}
 }
 
@@ -208,12 +216,5 @@ void win_draw(struct winlist_entry *w)
 	wbkgd(w->w->win, COLOR_PAIR(w->w->cp));
 	redrawwin(w->w->win);
 	box(w->w->win, 0, 0);
-	if (w->w->title) {
-		int l = mbswidth(w->w->title);
-		int b = strlen(w->w->title);
-		// char *dtitle = strabbrev_u8(w->w->title, w->w->w);
-		wattron(w->w->win, COLOR_PAIR(5));
-		mvwaddstr(w->w->win, 0, 0, w->w->title);
-		wattroff(w->w->win, COLOR_PAIR(5));
-	}
+        win_draw_title(w);
 }

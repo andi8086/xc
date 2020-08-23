@@ -41,3 +41,30 @@ int strncpy_u8(char *dest, char *src, size_t len)
 	dest[j] = 0;
 	return j;
 }
+
+
+char *strabbrev_u8(char *str, int maxwidth)
+{
+	if (!str) {
+		return NULL;
+	}
+	
+	int l = mbswidth(str);
+	int b = strlen(str);
+	char *newstr = malloc(b);
+	if (l <= maxwidth) {
+		return strcpy(newstr, str);
+	}
+	
+	if (!newstr) {
+		return NULL;
+	}
+
+	do {
+		strncpy_u8(newstr, str, maxwidth);
+	} while(mbswidth(newstr) > (maxwidth--) && maxwidth);
+	
+
+	return newstr;
+}
+
