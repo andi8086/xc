@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
 {
         setlocale(LC_ALL, "en_US.UTF-8");
 //	const char *msg = "Press 'q' to quit, 'n': next, 'p': prev window";
-        const char *msg = "\xe2\x9c\x93"; //"五笔输入法";
+        const char *msg = "五笔输入法";
 
 	initscr();
 	cbreak();
@@ -45,13 +45,13 @@ int main(int argc, char *argv[])
 
 	clear();
 	refresh();
-	g_window = win_create(15, 8, 3, 3);
-	w2 = win_create(10, 20, 5, 5);
-	w3 = win_create(13, 13, 6, 7);
+//	g_window = win_create(15, 8, 3, 3);
+//	w2 = win_create(10, 20, 5, 5);
+	w3 = win_create(13, 15, 3, 12);
 	win_set_color(w3, 3);
-        win_set_title(g_window, "abcdefghijklmnopqrstuvwxzy");
-	win_set_title(w2, "hallo");
-	win_set_title(w3, "文字");
+//        win_set_title(g_window, "abcdefghijklmnopqrstuvwxzy");
+//	win_set_title(w2, "hallo");
+	win_set_title(w3, "文字文字文字文字");
 	int x, y;
 
 	x = (COLS - strlen(msg)) / 2 - 1;
@@ -77,8 +77,8 @@ int main(int argc, char *argv[])
 		refresh();
 	}
 
-	win_destroy(g_window);
-	win_destroy(w2);
+//	win_destroy(g_window);
+//	win_destroy(w2);
 	win_destroy(w3);
 
 	endwin();

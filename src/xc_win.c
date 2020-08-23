@@ -200,6 +200,7 @@ static void win_draw_title(struct winlist_entry *w)
 	}
 	mvwaddstr(w->w->win,
 		0, (w->w->w - mbswidth(dtitle))/2, dtitle);
+	printf("%d\n", mbswidth(dtitle));
 	free(dtitle);
 	if (w->has_focus) {
 		wattroff(w->w->win, COLOR_PAIR(5));

@@ -34,7 +34,6 @@ int strncpy_u8(char *dest, char *src, size_t len)
 		j--;
 	};
 	j--;
-
 	strncpy(dest, src, j);
 
 	/* we expect to have one byte more */
@@ -52,19 +51,19 @@ char *strabbrev_u8(char *str, int maxwidth)
 	int l = mbswidth(str);
 	int b = strlen(str);
 	char *newstr = malloc(b);
+	if (!newstr) {
+		return NULL;
+	}
 	if (l <= maxwidth) {
 		return strcpy(newstr, str);
 	}
 	
-	if (!newstr) {
-		return NULL;
-	}
 
 	do {
 		strncpy_u8(newstr, str, maxwidth);
 	} while(mbswidth(newstr) > (maxwidth--) && maxwidth);
-	
 
+	printf("%d\n", mbswidth(newstr));
 	return newstr;
 }
 
