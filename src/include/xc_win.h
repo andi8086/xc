@@ -4,7 +4,7 @@
 #include <xc.h>
 
 typedef struct _XC_WIN {
-	char *name;	/* name UTF-8 */
+	char *title;	/* title UTF-8 */
 	int x, y;	/* location */
 	int w, h;	/* dimensions */
 	int cp;		/* color pair */
@@ -45,5 +45,8 @@ void win_focus_prev(void);
 void win_redraw_list(void);
 void win_set_color(struct winlist_entry *w, int cp);
 int win_getch(void);
+void win_set_title(struct winlist_entry *w, char *title);
+void win_draw(struct winlist_entry *w);
+void win_draw_titlebar(struct winlist_entry *w);
 
 #endif

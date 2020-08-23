@@ -1,5 +1,7 @@
 #include <stdlib.h>
 #include <xc_win.h>
+#include <xc_u8.h>
+#include <string.h>
 
 
 LIST_HEAD(winlist_head, winlist_entry) winlist_head =
@@ -53,6 +55,7 @@ struct winlist_entry *win_create_c(int height, int width, int y, int x, int cp)
 		we->has_focus = true;
 	}
 
+	we->w->title = NULL;
 	return we;
 }
 
@@ -65,11 +68,13 @@ struct winlist_entry *win_create(int height, int width, int y, int x)
 
 void win_destroy(struct winlist_entry *we)
 {
-
 	if (!we || !we->w || !we->w->win) {
 		return;
 	}
 	delwin(we->w->win);
+	if (we->w->title) {
+		free(we->w->title);
+	}
 	free(we->w);
 
 	LIST_REMOVE(we, entries);
@@ -83,7 +88,6 @@ void win_redraw_list(void)
 {
 	struct winlist_entry *we;
 
-
 	LIST_FOREACH(we, &winlist_head, entries) {
 		if (!we->has_focus) {
 			wrefresh(we->w->win);
@@ -91,8 +95,7 @@ void win_redraw_list(void)
 	}
 
 	if (focused_win) {
-		wrefresh(focused_win->w->win);
-		redrawwin(focused_win->w->win);
+		win_draw(focused_win);
 	}
 }
 
@@ -102,6 +105,7 @@ void win_focus_next(void)
 	struct winlist_entry *we;
 
 	focused_win->has_focus = false;
+	win_draw_titlebar(focused_win);
 
 	we = LIST_NEXT(focused_win, entries);
 	if (we) {
@@ -122,6 +126,7 @@ void win_focus_prev(void)
 	struct winlist_entry *we, *tmp;
 
 	focused_win->has_focus = false;
+	win_draw_titlebar(focused_win);
 
 	we = LIST_PREV(focused_win, &winlist_head, winlist_entry, entries);
 	if (we) {
@@ -158,4 +163,57 @@ void win_set_color(struct winlist_entry *e, int cp)
 	e->w->cp = cp;
 	wbkgd(e->w->win, COLOR_PAIR(cp));
 	touchwin(e->w->win);
+}
+
+
+void win_set_title(struct winlist_entry *e, char *title)
+{
+	if (!e || !e->w) {
+		return;
+	}
+	size_t bytelen = strlen(title) + 1;
+	if (!e->w->title) {
+		e->w->title = malloc(bytelen);
+		if (!e->w->title) {
+			return;
+		}
+		memcpy(e->w->title, title, bytelen);
+		return;
+	}
+	e->w->title = realloc(e->w->title, bytelen);
+	memcpy(e->w->title, title, bytelen);
+}
+
+
+void win_draw_titlebar(struct winlist_entry *w)
+{
+	if (!w || !w->w || !w->w->win) {
+		return;
+	}
+	if (w->w->title) {
+		int l = mbswidth(w->w->title);
+		int b = strlen(w->w->title);
+		// char *dtitle = strabbrev_u8(w->w->title, w->w->w);
+		mvwaddstr(w->w->win, 0, 0, w->w->title);
+	}
+}
+
+
+void win_draw(struct winlist_entry *w)
+{
+	if (!w || !w->w || !w->w->win) {
+		return;
+	}
+	wrefresh(w->w->win);
+	wbkgd(w->w->win, COLOR_PAIR(w->w->cp));
+	redrawwin(w->w->win);
+	box(w->w->win, 0, 0);
+	if (w->w->title) {
+		int l = mbswidth(w->w->title);
+		int b = strlen(w->w->title);
+		// char *dtitle = strabbrev_u8(w->w->title, w->w->w);
+		wattron(w->w->win, COLOR_PAIR(5));
+		mvwaddstr(w->w->win, 0, 0, w->w->title);
+		wattroff(w->w->win, COLOR_PAIR(5));
+	}
 }

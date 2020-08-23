@@ -47,21 +47,26 @@ int main(int argc, char *argv[])
 	//win_set_color(g_window, 5);
 	//win_set_color(w2, 6);
 	win_set_color(w3, 3);
-
+	win_set_title(w2, "hallo");
+	win_set_title(w3, "blubb");
 	int x, y;
 
 	x = (COLS - strlen(msg)) / 2 - 1;
 	y = LINES / 2 - 1;
 	mvaddstr(y, x, msg);
 	refresh();
-
+	curs_set(0);
 	int c;
 	while ((c = win_getch()) != 'q') {
-		if (c == 'n') {
+		switch(c) {
+		case 'n':
 			win_focus_next();
-		}
-		if (c == 'p') {
+			break;
+		case 'p':
 			win_focus_prev();
+			break;
+		default:
+			break;
 		}
 		win_redraw_list();
 		refresh();
