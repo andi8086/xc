@@ -5,6 +5,7 @@
 #include <xc_win.h>
 #include <sys/queue.h>
 #include <locale.h>
+#include <xc_u8.h>
 
 struct winlist_entry *g_window, *w2, *w3;
 
@@ -26,8 +27,7 @@ void init_colors(void)
 int main(int argc, char *argv[])
 {
         setlocale(LC_ALL, "en_US.UTF-8");
-//	const char *msg = "Press 'q' to quit, 'n': next, 'p': prev window";
-        const char *msg = "五笔输入法";
+	const char *msg = "Press 'q' to quit, 'n': next, 'p': prev window";
 
 	initscr();
 	cbreak();
@@ -45,12 +45,12 @@ int main(int argc, char *argv[])
 
 	clear();
 	refresh();
-//	g_window = win_create(15, 8, 3, 3);
-//	w2 = win_create(10, 20, 5, 5);
-	w3 = win_create(13, 15, 3, 12);
+	g_window = win_create(15, 8, 3, 3);
+	w2 = win_create(10, 20, 5, 5);
+	w3 = win_create(13, 11, 3, 12);
 	win_set_color(w3, 3);
-//        win_set_title(g_window, "abcdefghijklmnopqrstuvwxzy");
-//	win_set_title(w2, "hallo");
+        win_set_title(g_window, "abcdefghijklmnopqrstuvwxzy");
+	win_set_title(w2, "hallo");
 	win_set_title(w3, "文字文字文字文字");
 	int x, y;
 
