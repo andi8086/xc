@@ -215,6 +215,23 @@ void win_draw(struct winlist_entry *w)
 	wrefresh(w->w->win);
 	wbkgd(w->w->win, COLOR_PAIR(w->w->cp));
 	redrawwin(w->w->win);
-	box(w->w->win, 0, 0);
+	if (!w->w->double_border) {
+		box(w->w->win, 0, 0);
+	} else {
+		wborder_set(w->w->win, WACS_D_VLINE, WACS_D_VLINE,
+			WACS_D_HLINE, WACS_D_HLINE,
+			WACS_D_ULCORNER, WACS_D_URCORNER,
+			WACS_D_LLCORNER, WACS_D_LRCORNER);
+
+	}
         win_draw_title(w);
+}
+
+
+void win_set_double_border(struct winlist_entry *w, bool double_border)
+{
+	if (!w || !w->w) {
+		return;
+	}
+	w->w->double_border = double_border;
 }

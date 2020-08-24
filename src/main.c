@@ -7,7 +7,7 @@
 #include <locale.h>
 #include <xc_u8.h>
 
-struct winlist_entry *g_window, *w2, *w3;
+struct winlist_entry *lwin, *rwin;
 
 
 void init_colors(void)
@@ -27,7 +27,6 @@ void init_colors(void)
 int main(int argc, char *argv[])
 {
         setlocale(LC_ALL, "en_US.UTF-8");
-	const char *msg = "Press 'q' to quit, 'n': next, 'p': prev window";
 
 	initscr();
 	cbreak();
@@ -45,19 +44,15 @@ int main(int argc, char *argv[])
 
 	clear();
 	refresh();
-	g_window = win_create(15, 8, 3, 3);
-	w2 = win_create(10, 20, 5, 5);
-	w3 = win_create(13, 11, 3, 12);
-	win_set_color(w3, 3);
-        win_set_title(g_window, "abcdefghijklmnopqrstuvwxzy");
-	win_set_title(w2, "hallo");
-	win_set_title(w3, "文字文字文字文字");
+	lwin = win_create(LINES-3, COLS/2, 0, 0);
+	rwin = win_create(LINES-3, COLS/2, 0, COLS/2);
+	win_set_color(lwin, 5);
+	win_set_color(rwin, 5);
+	win_set_double_border(lwin, true);
+	win_set_double_border(rwin, true);
+	win_draw(rwin);
 	int x, y;
 
-	x = (COLS - strlen(msg)) / 2 - 1;
-	y = LINES / 2 - 1;
-	mvaddstr(y, x, msg);
-	refresh();
 	curs_set(0);
 	int c;
 	win_redraw_list();
@@ -77,9 +72,8 @@ int main(int argc, char *argv[])
 		refresh();
 	}
 
-//	win_destroy(g_window);
-//	win_destroy(w2);
-	win_destroy(w3);
+	win_destroy(rwin);
+	win_destroy(lwin);
 
 	endwin();
 

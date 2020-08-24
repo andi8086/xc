@@ -3,12 +3,14 @@
 
 #include <xc.h>
 #include <stddef.h>
+#include <stdbool.h>
 
 typedef struct _XC_WIN {
 	char *title;	/* title UTF-8 */
 	int x, y;	/* location */
 	int w, h;	/* dimensions */
 	int cp;		/* color pair */
+	bool double_border;
 	WINDOW *win;	/* ncurses window handle */
 } XC_WIN;
 
@@ -48,5 +50,5 @@ int win_getch(void);
 void win_set_title(struct winlist_entry *w, char *title);
 void win_draw(struct winlist_entry *w);
 void win_draw_titlebar(struct winlist_entry *w);
-
+void win_set_double_border(struct winlist_entry *w, bool double_border);
 #endif

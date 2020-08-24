@@ -52,18 +52,21 @@ char *strabbrev_u8(char *str, int maxwidth)
 	
 	int l = mbswidth(str);
 	int b = strlen(str);
-	char *newstr = malloc(b);
+	char *newstr = malloc(b+3);
 	if (!newstr) {
 		return NULL;
 	}
 	if (l <= maxwidth) {
 		return strcpy(newstr, str);
 	}
-	
+	maxwidth--;	
 	do {
 		strncpy_u8(newstr, str, maxwidth);
-	} while(mbswidth(newstr) > (maxwidth--) && maxwidth);
-
+		maxwidth--;
+	} while(mbswidth(newstr) > (maxwidth) && maxwidth);
+	
+	// add ellipsis
+	strcat(newstr, "\xE2\x80\xA6");
 	return newstr;
 }
 

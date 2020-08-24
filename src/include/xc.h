@@ -4,6 +4,8 @@
 #include <config.h>
 #include <sys/queue.h>
 
+#define NCURSES_WIDECHAR 1
+
 #ifdef HAVE_NCURSES_H
 #include <ncurses.h>
 #elif defined(HAVE_NCURSESW_H)
