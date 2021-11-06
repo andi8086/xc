@@ -8,7 +8,7 @@
 #include <xc_u8.h>
 
 struct winlist_entry *lwin, *rwin;
-
+static WINDOW *null_win;
 
 void init_colors(void)
 {
@@ -41,6 +41,7 @@ int main(int argc, char *argv[])
                 getch();
         }
         init_colors();
+        xc_render_init();
 
         clear();
         refresh();
@@ -52,26 +53,38 @@ int main(int argc, char *argv[])
         win_set_double_border(rwin, true);
         win_set_title(lwin, "thisdir");
         win_set_title(rwin, "thatdir");
+        win_set_render_mode(lwin, RENDERMODE_DIR_FULL);
+        win_set_render_mode(rwin, RENDERMODE_DIR_FULL);
+
         win_draw(rwin);
         int x, y;
 
         curs_set(0);
         int c;
+
+        bool running = true;
+
         win_redraw_list();
-        refresh();
-        while ((c = win_getch()) != 'q') {
+        while (running) {
+                refresh();
+                win_redraw_list();
+                c = wgetch(win_get_focused()->w->win);
+
+                if (win_handle_input(win_get_focused(), c)) {
+                        /* input consumed by focused window */
+                        continue;
+                }
+
                 switch(c) {
-                case 'n':
+                case 0x09:
                         win_focus_next();
-                        break;
-                case 'p':
-                        win_focus_prev();
+                        continue;
+                case KEY_F(10):
+                        running = false;
                         break;
                 default:
                         break;
                 }
-                win_redraw_list();
-                refresh();
         }
 
         win_destroy(rwin);

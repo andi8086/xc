@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <xc_win.h>
 #include <xc_u8.h>
+#include <xc_render.h>
 #include <string.h>
 
 
@@ -12,6 +13,35 @@ struct winlist_head *headp;
 static struct winlist_entry *focused_win;
 
 static void win_draw_title(struct winlist_entry *w);
+
+
+bool win_handle_input(struct winlist_entry *w, int key)
+{
+        if (!w) {
+                return false;
+        }
+
+        return render_infos[w->w->rmode].render_input_cb(w, key);
+}
+
+
+struct winlist_entry *win_get_focused(void)
+{
+        return focused_win;
+}
+
+
+int win_set_render_mode(struct winlist_entry *w, xc_render_mode_t rmode)
+{
+        int res;
+        res = render_infos[rmode].render_init(&(w->w->render_ctx));
+        if (res) {
+                return res;
+        }
+        w->w->rmode = rmode;
+        return 0;
+}
+
 
 struct winlist_entry *win_create_c(int height, int width, int y, int x, int cp)
 {
@@ -57,6 +87,8 @@ struct winlist_entry *win_create_c(int height, int width, int y, int x, int cp)
         }
 
         we->w->title = NULL;
+        keypad(we->w->win, TRUE); /* interpret function keys */
+
         return we;
 }
 
@@ -106,7 +138,7 @@ void win_focus_next(void)
         struct winlist_entry *we;
 
         focused_win->has_focus = false;
-        win_draw_title(focused_win);
+        win_draw(focused_win);
 
         we = LIST_NEXT(focused_win, entries);
         if (we) {
@@ -127,7 +159,7 @@ void win_focus_prev(void)
         struct winlist_entry *we, *tmp;
 
         focused_win->has_focus = false;
-        win_draw_title(focused_win);
+        win_draw(focused_win);
 
         we = LIST_PREV(focused_win, &winlist_head, winlist_entry, entries);
         if (we) {
@@ -225,6 +257,7 @@ void win_draw(struct winlist_entry *w)
 
         }
         win_draw_title(w);
+        render_infos[w->w->rmode].render_draw(w, w->w->w-2, w->w->h-2);
 }
 
 
