@@ -8,7 +8,7 @@
 #include <xc_u8.h>
 #include <xc_timer.h>
 
-struct winlist_entry *lwin, *rwin, *fun_keys;
+struct winlist_entry *lwin, *rwin, *fun_keys, *cmdline;
 static WINDOW *null_win;
 
 void init_colors(void)
@@ -64,6 +64,12 @@ int main(int argc, char *argv[])
         win_non_focusable(fun_keys);
         win_set_border(fun_keys, BORDER_NONE);
         win_set_render_mode(fun_keys, RENDERMODE_KEYS);
+        cmdline = win_create(2, COLS, LINES-3, 0);
+        win_non_focusable(cmdline);
+        win_set_border(cmdline, BORDER_NONE);
+        win_set_render_mode(cmdline, RENDERMODE_CMDLINE);
+
+        win_draw(cmdline);
         win_draw(fun_keys);
         win_draw(rwin);
 

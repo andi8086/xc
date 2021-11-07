@@ -18,13 +18,15 @@ typedef struct xc_render_info {
 
 #include <xc_render_dir_full.h>
 #include <xc_render_keys.h>
+#include <xc_render_cmdline.h>
 
 typedef enum {
         RENDERMODE_DIR_FULL = 0,
-        RENDERMODE_KEYS
+        RENDERMODE_KEYS,
+        RENDERMODE_CMDLINE
 } xc_render_mode_t;
 
-extern xc_render_info_t render_infos[2];
+extern xc_render_info_t render_infos[3];
 
 void xc_render_init(void);
 
