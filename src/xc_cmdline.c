@@ -149,8 +149,7 @@ bool xc_render_cmdline_input_cb(void *winlist_e, int key)
                 if (strlen(command_buffer)) {
                         xc_execute_command(command_buffer,
                                            &out_buff, &err_buff);
-                        output_win = win_create_c(LINES-10, COLS-20, 5, 10,
-                                                  COLOR_PAIR(8));
+                        output_win = win_create_c(LINES-10, COLS-20, 5, 10, 8);
                         win_set_render_mode(output_win, RENDERMODE_OUTPUT);
                         win_set_title(output_win, "Cmd output");
                         xc_output_set(output_win, out_buff, err_buff, win_get_focused());

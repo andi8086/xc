@@ -8,6 +8,8 @@ typedef struct xc_render_output_ctx {
         char *stdout_buffer;
         char *stderr_buffer;
         void *old_focus;
+        int xpos, ypos;
+        int buffsel;
 } xcr_output_t;
 
 
