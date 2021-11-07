@@ -1,15 +1,18 @@
 #define _XOPEN_SOURCE_EXTENDED
-#include <stdlib.h>
-#include <string.h>
 #include <xc.h>
 #include <xc_win.h>
-#include <sys/queue.h>
-#include <locale.h>
 #include <xc_u8.h>
 #include <xc_timer.h>
 
+#include <stdlib.h>
+#include <string.h>
+#include <sys/queue.h>
+#include <locale.h>
+#include <signal.h>
+
 struct winlist_entry *lwin, *rwin, *fun_keys, *cmdline;
 static WINDOW *null_win;
+
 
 void init_colors(void)
 {
@@ -26,6 +29,26 @@ void init_colors(void)
         init_pair(8, COLOR_WHITE, COLOR_BLACK);
 
         init_pair(9, COLOR_WHITE, COLOR_YELLOW);
+}
+
+
+void gui_resize(void)
+{
+        int max_y, max_x;
+//        getmaxyx(stdscr, max_y, max_x);
+        max_y = LINES;
+        max_x = COLS;
+
+        win_resize(lwin, max_y-3, max_x/2);
+        win_move(lwin, 0, 0);
+        win_resize(rwin, max_y-3, max_x/2);
+        win_move(rwin, 0, max_x/2);
+
+        win_resize(fun_keys, 1, max_x);
+        win_move(fun_keys, max_y-1, 0);
+
+        win_resize(cmdline, 2, max_x);
+        win_move(cmdline, max_y-3, 0);
 }
 
 
@@ -83,13 +106,15 @@ int main(int argc, char *argv[])
 
         bool running = true;
 
-        win_redraw_list();
         while (running) {
                 refresh();
-                win_redraw_list();
+                win_redraw_list(false);
                 win_draw(cmdline);
                 /* wgetch returns after timeout */
-                c = wgetch(win_get_focused()->w->win);
+
+                win_draw(fun_keys);
+
+                c = win_getch();
 
                 if (win_handle_input(win_get_focused(), c)) {
                         /* input consumed by focused window */
@@ -104,6 +129,10 @@ int main(int argc, char *argv[])
                         continue;
                 case KEY_F(10):
                         running = false;
+                        break;
+                case KEY_RESIZE:
+                        gui_resize();
+                        win_redraw_list(true);
                         break;
                 default:
                         break;

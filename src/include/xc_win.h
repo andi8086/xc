@@ -57,7 +57,7 @@ void win_destroy(struct winlist_entry *we);
 void win_focus_next(void);
 void win_focus_prev(void);
 struct winlist_entry *win_get_focused(void);
-void win_redraw_list(void);
+void win_redraw_list(bool force);
 void win_set_color(struct winlist_entry *w, int cp);
 int win_getch(void);
 void win_set_title(struct winlist_entry *w, char *title);
@@ -67,5 +67,8 @@ void win_set_border(struct winlist_entry *w, win_border_t border);
 int win_set_render_mode(struct winlist_entry *w, xc_render_mode_t rmode);
 bool win_handle_input(struct winlist_entry *w, int key);
 void win_non_focusable(struct winlist_entry *w);
+void win_resize(struct winlist_entry *w, int height, int width);
+void win_move(struct winlist_entry *w, int y, int x);
+
 
 #endif

@@ -15,6 +15,23 @@ static struct winlist_entry *focused_win;
 static void win_draw_title(struct winlist_entry *w);
 
 
+void win_resize(struct winlist_entry *w, int height, int width)
+{
+        wresize(w->w->win, height, width);
+        w->w->h = height;
+        w->w->w = width;
+}
+
+
+void win_move(struct winlist_entry *w, int y, int x)
+{
+        /* no, it is not wmove!!!! ARGH */
+        mvwin(w->w->win, y, x);
+        w->w->y = y;
+        w->w->x = x;
+}
+
+
 void win_non_focusable(struct winlist_entry *w)
 {
         w->focusable = false;
@@ -125,13 +142,16 @@ void win_destroy(struct winlist_entry *we)
 }
 
 
-void win_redraw_list(void)
+void win_redraw_list(bool force)
 {
         struct winlist_entry *we;
 
         LIST_FOREACH(we, &winlist_head, entries) {
                 if (!we->has_focus) {
                         wrefresh(we->w->win);
+                        if (force) {
+                                win_draw(we);
+                        }
                 }
         }
 

@@ -60,7 +60,7 @@ int xc_render_keys(void *winlist_e, int w, int h)
         }
 
         wattron(wle->w->win, COLOR_PAIR(8));
-        wclear(wle->w->win);
+        werase(wle->w->win);
         wattroff(wle->w->win, COLOR_PAIR(8));
 
         for (int i = 0; i < 12; i++) {
