@@ -93,7 +93,9 @@ int main(int argc, char *argv[])
                         /* input consumed by focused window */
                         continue;
                 }
-
+                if (win_handle_input(cmdline, c)) {
+                        continue;
+                }
                 switch(c) {
                 case '\t':
                         win_focus_next();

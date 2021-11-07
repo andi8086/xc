@@ -7,15 +7,19 @@
 #define CLOCKID CLOCK_MONOTONIC
 
 
-static bool cursor;
+bool cursor;
+uint64_t timer_counter;
 
 
 static void xc_timer_handler(int sig, siginfo_t *si, void *uc)
 {
+        extern struct winlist_entry *cmdline;
+
         cursor = !cursor;
-        wrefresh(stdscr);
-        mvwaddstr(stdscr, LINES-2, COLS-2, cursor ? "*" : " ");
-        win_redraw_list();
+        __atomic_add_fetch(&timer_counter, 1, __ATOMIC_ACQ_REL);
+//        timer_counter++;
+//        mvwaddstr(stdscr, LINES-2, COLS-2, cursor ? "*" : " ");
+        win_draw(cmdline);
 }
 
 
@@ -34,34 +38,12 @@ int xc_timer_init(void)
                 return -1;
         }
 
-/*
-        sigemptyset(&mask);
-        sigaddset(&mask, SIGRTMIN);
-        if (sigprocmask(SIG_SETMASK, &mask, NULL) == -1) {
-                return -1;
-        }
-        sev.sigev_notify = SIGEV_SIGNAL;
-        sev.sigev_signo = SIGRTMIN;
-        sev.sigev_value.sival_ptr = &timerid;
-        if (timer_create(CLOCKID, &sev, &timerid) == -1) {
-                return -1;
-        }
-*/
-
         its.it_value.tv_sec = 0;
         its.it_value.tv_usec = XC_SYS_TICK * 1000;
         its.it_interval.tv_sec = its.it_value.tv_sec;
         its.it_interval.tv_usec = its.it_value.tv_usec;
         setitimer(ITIMER_REAL, &its, NULL);
-/*
-        if (timer_settime(timerid, 0, &its, NULL) == -1) {
-                return -1;
-        }
 
-        if (sigprocmask(SIG_UNBLOCK, &mask, NULL) == -1) {
-                return -1;
-        }
-*/
         return 0;
 }
 
