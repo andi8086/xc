@@ -15,6 +15,12 @@ static struct winlist_entry *focused_win;
 static void win_draw_title(struct winlist_entry *w);
 
 
+void win_non_focusable(struct winlist_entry *w)
+{
+        w->focusable = false;
+}
+
+
 bool win_handle_input(struct winlist_entry *w, int key)
 {
         if (!w) {
@@ -89,6 +95,7 @@ struct winlist_entry *win_create_c(int height, int width, int y, int x, int cp)
         we->w->title = NULL;
         keypad(we->w->win, TRUE); /* interpret function keys */
 
+        we->focusable = true;
         return we;
 }
 
@@ -135,20 +142,27 @@ void win_redraw_list(void)
 
 void win_focus_next(void)
 {
-        struct winlist_entry *we;
+        struct winlist_entry *we, *curr_focus;
 
         focused_win->has_focus = false;
         win_draw(focused_win);
 
-        we = LIST_NEXT(focused_win, entries);
-        if (we) {
-                focused_win = we;
-        } else {
-                we = LIST_FIRST(&winlist_head);
+        curr_focus = focused_win;
+
+        /* repeat as long as we don't have a focusable window, until we get
+         * to the same that already had the focus */
+        do {
+                we = LIST_NEXT(focused_win, entries);
                 if (we) {
                         focused_win = we;
+                } else {
+                        we = LIST_FIRST(&winlist_head);
+                        if (we) {
+                                focused_win = we;
+                        }
                 }
-        }
+        } while (focused_win != curr_focus &&
+                 !focused_win->focusable);
 
         focused_win->has_focus = true;
 }
@@ -156,24 +170,30 @@ void win_focus_next(void)
 
 void win_focus_prev(void)
 {
-        struct winlist_entry *we, *tmp;
+        struct winlist_entry *we, *tmp, *curr_focus;
 
         focused_win->has_focus = false;
         win_draw(focused_win);
 
-        we = LIST_PREV(focused_win, &winlist_head, winlist_entry, entries);
-        if (we) {
-                focused_win = we;
-        } else {
-                tmp = NULL;
-                we = focused_win;
-                while(we = LIST_NEXT(we, entries)) {
-                        tmp = we;
-                };
-                if (tmp) {
-                        focused_win = tmp;
+        curr_focus = focused_win;
+
+        do {
+                we = LIST_PREV(focused_win, &winlist_head, winlist_entry,
+                               entries);
+                if (we) {
+                        focused_win = we;
+                } else {
+                        tmp = NULL;
+                        we = focused_win;
+                        while(we = LIST_NEXT(we, entries)) {
+                                tmp = we;
+                        };
+                        if (tmp) {
+                                focused_win = tmp;
+                        }
                 }
-        }
+        } while (focused_win != curr_focus &&
+                 !focused_win->focusable);
 
         focused_win->has_focus = true;
 }
@@ -247,24 +267,32 @@ void win_draw(struct winlist_entry *w)
         wrefresh(w->w->win);
         wbkgd(w->w->win, COLOR_PAIR(w->w->cp));
         redrawwin(w->w->win);
-        if (!w->w->double_border) {
+        switch (w->w->border) {
+        case BORDER_SINGLE:
                 box(w->w->win, 0, 0);
-        } else {
+                break;
+        case BORDER_DOUBLE:
                 wborder_set(w->w->win, WACS_D_VLINE, WACS_D_VLINE,
                         WACS_D_HLINE, WACS_D_HLINE,
                         WACS_D_ULCORNER, WACS_D_URCORNER,
                         WACS_D_LLCORNER, WACS_D_LRCORNER);
+                break;
+        case BORDER_NONE:
+        default:
+                break;
 
         }
+
         win_draw_title(w);
         render_infos[w->w->rmode].render_draw(w, w->w->w-2, w->w->h-2);
 }
 
 
-void win_set_double_border(struct winlist_entry *w, bool double_border)
+void win_set_border(struct winlist_entry *w, win_border_t border)
 {
         if (!w || !w->w) {
                 return;
         }
-        w->w->double_border = double_border;
+        w->w->border = border;
 }
+

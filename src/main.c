@@ -7,7 +7,7 @@
 #include <locale.h>
 #include <xc_u8.h>
 
-struct winlist_entry *lwin, *rwin;
+struct winlist_entry *lwin, *rwin, *fun_keys;
 static WINDOW *null_win;
 
 void init_colors(void)
@@ -19,8 +19,9 @@ void init_colors(void)
         init_pair(4, COLOR_RED, COLOR_BLACK);
 
         init_pair(5, COLOR_WHITE, COLOR_BLUE);
-        init_pair(6, COLOR_WHITE, COLOR_RED);
+        init_pair(6, COLOR_BLACK, COLOR_CYAN);
         init_pair(7, COLOR_BLACK, COLOR_GREEN);
+        init_pair(8, COLOR_WHITE, COLOR_BLACK);
 }
 
 
@@ -49,13 +50,17 @@ int main(int argc, char *argv[])
         rwin = win_create(LINES-3, COLS/2, 0, COLS/2);
         win_set_color(lwin, 5);
         win_set_color(rwin, 5);
-        win_set_double_border(lwin, true);
-        win_set_double_border(rwin, true);
+        win_set_border(lwin, BORDER_DOUBLE);
+        win_set_border(rwin, BORDER_DOUBLE);
         win_set_title(lwin, "thisdir");
         win_set_title(rwin, "thatdir");
         win_set_render_mode(lwin, RENDERMODE_DIR_FULL);
         win_set_render_mode(rwin, RENDERMODE_DIR_FULL);
-
+        fun_keys = win_create(1, COLS, LINES-1, 0);
+        win_non_focusable(fun_keys);
+        win_set_border(fun_keys, BORDER_NONE);
+        win_set_render_mode(fun_keys, RENDERMODE_KEYS);
+        win_draw(fun_keys);
         win_draw(rwin);
         int x, y;
 
@@ -76,7 +81,7 @@ int main(int argc, char *argv[])
                 }
 
                 switch(c) {
-                case 0x09:
+                case '\t':
                         win_focus_next();
                         continue;
                 case KEY_F(10):
@@ -87,6 +92,7 @@ int main(int argc, char *argv[])
                 }
         }
 
+        win_destroy(fun_keys);
         win_destroy(rwin);
         win_destroy(lwin);
 

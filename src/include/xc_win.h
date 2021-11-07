@@ -6,12 +6,20 @@
 #include <stdbool.h>
 #include <xc_render.h>
 
+
+typedef enum {
+        BORDER_SINGLE = 0,
+        BORDER_DOUBLE,
+        BORDER_NONE
+} win_border_t;
+
+
 typedef struct _XC_WIN {
         char *title;    /* title UTF-8 */
         int x, y;       /* location */
         int w, h;       /* dimensions */
         int cp;         /* color pair */
-        bool double_border;
+        win_border_t border;
         WINDOW *win;    /* ncurses window handle */
         xc_render_mode_t rmode;
         void *render_ctx;
@@ -21,6 +29,7 @@ typedef struct _XC_WIN {
 struct winlist_entry {
         XC_WIN *w;
         bool has_focus;
+        bool focusable;
         LIST_ENTRY(winlist_entry) entries;
 };
 
@@ -54,8 +63,9 @@ int win_getch(void);
 void win_set_title(struct winlist_entry *w, char *title);
 void win_draw(struct winlist_entry *w);
 void win_draw_titlebar(struct winlist_entry *w);
-void win_set_double_border(struct winlist_entry *w, bool double_border);
+void win_set_border(struct winlist_entry *w, win_border_t border);
 int win_set_render_mode(struct winlist_entry *w, xc_render_mode_t rmode);
 bool win_handle_input(struct winlist_entry *w, int key);
+void win_non_focusable(struct winlist_entry *w);
 
 #endif

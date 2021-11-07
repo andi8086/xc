@@ -1,6 +1,6 @@
 #include <xc_render.h>
 
-xc_render_info_t render_infos[1];
+xc_render_info_t render_infos[2];
 
 void xc_render_init(void)
 {
@@ -11,4 +11,10 @@ void xc_render_init(void)
         ri->render_draw = xc_render_dir_full;
         ri->render_release = xc_render_dir_full_release;
         ri->render_input_cb = xc_render_dir_full_input_cb;
+
+        ri = &render_infos[RENDERMODE_KEYS];
+        ri->render_init = xc_render_keys_init;
+        ri->render_draw = xc_render_keys;
+        ri->render_release = xc_render_keys_release;
+        ri->render_input_cb = xc_render_keys_input_cb;
 }
