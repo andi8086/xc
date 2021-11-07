@@ -1,6 +1,6 @@
 #include <xc_render.h>
 
-xc_render_info_t render_infos[3];
+xc_render_info_t render_infos[4];
 
 void xc_render_init(void)
 {
@@ -23,4 +23,10 @@ void xc_render_init(void)
         ri->render_draw = xc_render_cmdline;
         ri->render_release = xc_render_cmdline_release;
         ri->render_input_cb = xc_render_cmdline_input_cb;
+
+        ri = &render_infos[RENDERMODE_OUTPUT];
+        ri->render_init = xc_render_output_init;
+        ri->render_draw = xc_render_output;
+        ri->render_release = xc_render_output_release;
+        ri->render_input_cb = xc_render_output_input_cb;
 }

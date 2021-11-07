@@ -54,6 +54,7 @@ struct winlist_entry *win_create(int height, int width, int y, int x);
 struct winlist_entry *win_create_c(int height, int width, int y, int x,
         int cp);
 void win_destroy(struct winlist_entry *we);
+void win_set_focus(struct winlist_entry *we);
 void win_focus_next(void);
 void win_focus_prev(void);
 struct winlist_entry *win_get_focused(void);

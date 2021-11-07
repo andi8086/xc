@@ -66,9 +66,9 @@ int xc_render_keys(void *winlist_e, int w, int h)
         for (int i = 0; i < 12; i++) {
                 memset(buffer, 0, sizeof(buffer));
                 sprintf(buffer, "%d", i + 1);
-                wattron(wle->w->win, COLOR_PAIR(8));
+                wattron(wle->w->win, COLOR_PAIR(2));
                 mvwaddstr(wle->w->win, 0, floor(grid_width * i), buffer);
-                wattroff(wle->w->win, COLOR_PAIR(8));
+                wattroff(wle->w->win, COLOR_PAIR(2));
                 snprintf(buffer, sizeof(buffer)-1, "%-*s",
                          key_len-1, ctx->names[i]);
 

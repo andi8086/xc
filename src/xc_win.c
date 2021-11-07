@@ -133,6 +133,8 @@ void win_destroy(struct winlist_entry *we)
         if (we->w->title) {
                 free(we->w->title);
         }
+
+        render_infos[we->w->rmode].render_release(&we->w->render_ctx);
         free(we->w);
 
         LIST_REMOVE(we, entries);
@@ -158,6 +160,17 @@ void win_redraw_list(bool force)
         if (focused_win) {
                 win_draw(focused_win);
         }
+}
+
+
+void win_set_focus(struct winlist_entry *we)
+{
+        focused_win->has_focus = false;
+        win_draw(focused_win);
+
+        focused_win = we;
+        focused_win->has_focus = true;
+        win_draw(focused_win);
 }
 
 

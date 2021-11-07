@@ -64,8 +64,8 @@ static int load_files_async(xcr_dir_full_t **ctx)
                                 pthread_mutex_lock(&(*ctx)->lock);
                                 (*ctx)->max_files += 1000;
                                 (*ctx)->files = mremap((*ctx)->files, old_size,
-                                                       (*ctx)->max_files,
-                                                       MREMAP_MAYMOVE);
+                                        sizeof(xc_file_t) * (*ctx)->max_files,
+                                        MREMAP_MAYMOVE);
                                 pthread_mutex_unlock(&(*ctx)->lock);
                                 if ((*ctx)->files == MAP_FAILED) {
                                         _exit(-ENOMEM);
@@ -182,6 +182,8 @@ int xc_render_dir_full(void *winlist_e, int w, int h)
 
 void xc_render_dir_full_release(void **ctx)
 {
-        free(*ctx);
+        xcr_dir_full_t *x = *(xcr_dir_full_t **)ctx;
+        munmap(x->files, sizeof(xc_file_t) * x->max_files);
+        munmap(x, sizeof(xcr_dir_full_t));
         *ctx = NULL;
 }
