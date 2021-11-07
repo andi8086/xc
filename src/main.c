@@ -6,6 +6,7 @@
 #include <sys/queue.h>
 #include <locale.h>
 #include <xc_u8.h>
+#include <xc_timer.h>
 
 struct winlist_entry *lwin, *rwin, *fun_keys;
 static WINDOW *null_win;
@@ -65,6 +66,10 @@ int main(int argc, char *argv[])
         win_set_render_mode(fun_keys, RENDERMODE_KEYS);
         win_draw(fun_keys);
         win_draw(rwin);
+
+        if (xc_timer_init()) {
+                goto error_init;
+        }
         int x, y;
 
         curs_set(0);
@@ -94,7 +99,7 @@ int main(int argc, char *argv[])
                         break;
                 }
         }
-
+error_init:
         win_destroy(fun_keys);
         win_destroy(rwin);
         win_destroy(lwin);
