@@ -87,6 +87,8 @@ int main(int argc, char *argv[])
         while (running) {
                 refresh();
                 win_redraw_list();
+                win_draw(cmdline);
+                /* wgetch returns after timeout */
                 c = wgetch(win_get_focused()->w->win);
 
                 if (win_handle_input(win_get_focused(), c)) {

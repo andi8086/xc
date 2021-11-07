@@ -17,9 +17,6 @@ static void xc_timer_handler(int sig, siginfo_t *si, void *uc)
 
         cursor = !cursor;
         __atomic_add_fetch(&timer_counter, 1, __ATOMIC_ACQ_REL);
-//        timer_counter++;
-//        mvwaddstr(stdscr, LINES-2, COLS-2, cursor ? "*" : " ");
-        win_draw(cmdline);
 }
 
 

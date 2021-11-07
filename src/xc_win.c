@@ -96,6 +96,7 @@ struct winlist_entry *win_create_c(int height, int width, int y, int x, int cp)
         keypad(we->w->win, TRUE); /* interpret function keys */
 
         we->focusable = true;
+        wtimeout(we->w->win, 10);
         return we;
 }
 
