@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <errno.h>
+#include <math.h>
 
 
 int xc_render_keys_init(void **ctx)
@@ -50,27 +51,35 @@ int xc_render_keys(void *winlist_e, int w, int h)
         struct xc_render_keys_ctx *ctx =
                 (struct xc_render_keys_ctx *)wle->w->render_ctx;
 
-        char buffer[12];
-        int key_width = wle->w->w / 12 - 2;
+        char buffer[32];
         int key_offset;
+        float grid_width = wle->w->w / 12.0;
+        int key_len = floor(grid_width);
+        if (key_len >= sizeof(buffer)) {
+                key_len = sizeof(buffer) - 1;
+        }
+
+        wattron(wle->w->win, COLOR_PAIR(8));
+        wclear(wle->w->win);
+        wattroff(wle->w->win, COLOR_PAIR(8));
 
         for (int i = 0; i < 12; i++) {
                 memset(buffer, 0, sizeof(buffer));
                 sprintf(buffer, "%d", i + 1);
                 wattron(wle->w->win, COLOR_PAIR(8));
-                mvwaddstr(wle->w->win, 0, wle->w->w / 12 * i, buffer);
+                mvwaddstr(wle->w->win, 0, floor(grid_width * i), buffer);
                 wattroff(wle->w->win, COLOR_PAIR(8));
                 snprintf(buffer, sizeof(buffer)-1, "%-*s",
-                         key_width, ctx->names[i]);
-                wattron(wle->w->win, COLOR_PAIR(6));
+                         key_len-1, ctx->names[i]);
 
                 key_offset = 1;
                 if (i > 8) {
                         key_offset += 1;
                 }
-                mvwaddstr(wle->w->win, 0, wle->w->w / 12 * i + key_offset,
+                wattron(wle->w->win, COLOR_PAIR(9));
+                mvwaddstr(wle->w->win, 0, floor(grid_width * i) + key_offset,
                           buffer);
-                wattroff(wle->w->win, COLOR_PAIR(6));
+                wattroff(wle->w->win, COLOR_PAIR(9));
         }
 
         return 0;
