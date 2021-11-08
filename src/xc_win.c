@@ -12,8 +12,6 @@ struct winlist_head *headp;
 
 static struct winlist_entry *focused_win;
 
-static void win_draw_title(struct winlist_entry *w);
-
 
 void win_resize(struct winlist_entry *w, int height, int width)
 {
@@ -272,7 +270,7 @@ void win_set_title(struct winlist_entry *e, char *title)
 }
 
 
-static void win_draw_title(struct winlist_entry *w)
+void win_draw_title(struct winlist_entry *w)
 {
         if (!w->w->title) {
                 return;

@@ -17,7 +17,7 @@ static WINDOW *null_win;
 void init_colors(void)
 {
         start_color();
-        init_color(COLOR_YELLOW, 255, 0, 255);
+        init_color(COLOR_YELLOW, 1000, 1000, 0);
         init_pair(1, COLOR_BLUE, COLOR_BLACK);
         init_pair(2, COLOR_GREEN, COLOR_BLACK);
         init_pair(3, COLOR_CYAN, COLOR_BLACK);
@@ -29,6 +29,10 @@ void init_colors(void)
         init_pair(8, COLOR_WHITE, COLOR_BLACK);
 
         init_pair(9, COLOR_WHITE, COLOR_YELLOW);
+        init_color(9, 800, 0, 200);
+        init_pair(10, COLOR_YELLOW, COLOR_BLUE);
+        init_pair(11, COLOR_WHITE, 9);
+        init_pair(12, COLOR_YELLOW, COLOR_BLACK);
 }
 
 
@@ -79,8 +83,6 @@ int main(int argc, char *argv[])
         win_set_color(rwin, 5);
         win_set_border(lwin, BORDER_DOUBLE);
         win_set_border(rwin, BORDER_DOUBLE);
-        win_set_title(lwin, "thisdir");
-        win_set_title(rwin, "thatdir");
         win_set_render_mode(lwin, RENDERMODE_DIR_FULL);
         win_set_render_mode(rwin, RENDERMODE_DIR_FULL);
         fun_keys = win_create(1, COLS, LINES-1, 0);

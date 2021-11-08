@@ -58,6 +58,7 @@ void win_set_focus(struct winlist_entry *we);
 void win_focus_next(void);
 void win_focus_prev(void);
 struct winlist_entry *win_get_focused(void);
+void win_draw_title(struct winlist_entry *w);
 void win_redraw_list(bool force);
 void win_set_color(struct winlist_entry *w, int cp);
 int win_getch(void);

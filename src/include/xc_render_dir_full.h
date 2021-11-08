@@ -9,6 +9,7 @@
 
 typedef struct xc_render_dir_full_ctx {
         int pos;
+        uint32_t yoffs;
         char curr_dir[PATH_MAX];
         xc_file_t *files; 
         uint32_t num_files;

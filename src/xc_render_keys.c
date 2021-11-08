@@ -76,10 +76,10 @@ int xc_render_keys(void *winlist_e, int w, int h)
                 if (i > 8) {
                         key_offset += 1;
                 }
-                wattron(wle->w->win, COLOR_PAIR(9));
+                wattron(wle->w->win, COLOR_PAIR(11));
                 mvwaddstr(wle->w->win, 0, floor(grid_width * i) + key_offset,
                           buffer);
-                wattroff(wle->w->win, COLOR_PAIR(9));
+                wattroff(wle->w->win, COLOR_PAIR(11));
         }
 
         return 0;

@@ -110,10 +110,10 @@ int xc_render_output(void *winlist_e, int w, int h)
         default:
                 break;
         }
-        wattron(wle->w->win, COLOR_PAIR(9));
+        wattron(wle->w->win, COLOR_PAIR(12));
         mvwaddstr(wle->w->win, h, 1,
                   "h/j/k/l navigate, q(uit), std(o)ut, std(e)rr");
-        wattroff(wle->w->win, COLOR_PAIR(3));
+        wattroff(wle->w->win, COLOR_PAIR(12));
         return 0;
 }
 
