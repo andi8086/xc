@@ -26,7 +26,7 @@ static int load_files_async(xcr_dir_full_t **ctx)
         if (pid == -1) {
                 return -1;
         }
-        
+
         if (pid != 0)
         {
                 return 0;
@@ -181,16 +181,18 @@ int xc_render_dir_full(void *winlist_e, int w, int h)
                          ctx->files[i + ctx->yoffs].e.d_name);
                 mvwaddstr(wle->w->win, 2 + i, 1, buffer);
                 mvwaddstr(wle->w->win, 2 + i, w_name_field + 1, "\xe2\x94\x82");
-                
+
                 fsize = ctx->files[i + ctx->yoffs].s.st_size;
+                sidx = 0;
                 while (fsize > 999999) {
                         fsize >>= 10;
                         sidx++;
                 }
 
-                snprintf(buffer, sizeof(buffer)-1, "% 7u%c", fsize, suffix[sidx]);
+                snprintf(buffer, sizeof(buffer)-1, "% 7u%c", fsize,
+                         suffix[sidx]);
                 mvwaddstr(wle->w->win, 2 + i, w_name_field + 2, buffer);
-                        
+
         }
         mvwaddstr(wle->w->win, 1, w_name_field + 1, "\xe2\x94\x82");
         wattron(wle->w->win, COLOR_PAIR(10));
