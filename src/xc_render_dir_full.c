@@ -188,17 +188,25 @@ int xc_render_dir_full(void *winlist_e, int w, int h)
                         fsize >>= 10;
                         sidx++;
                 }
-
-                snprintf(buffer, sizeof(buffer)-1, "% 7u%c", fsize,
-                         suffix[sidx]);
+                if (strcmp(ctx->files[i+ctx->yoffs].e.d_name, "..") == 0) {
+                        snprintf(buffer, sizeof(buffer)-1,
+                                 "\xe2\x96\xb6UP--DIR\xe2\x97\x80");
+                } else
+                if (S_ISDIR(ctx->files[i+ctx->yoffs].s.st_mode)) {
+                        snprintf(buffer, sizeof(buffer)-1,
+                                "\xe2\x96\xb6SUB-DIR\xe2\x97\x80");
+                } else {
+                        snprintf(buffer, sizeof(buffer)-1, "% 8u%c", fsize,
+                                 suffix[sidx]);
+                }
                 mvwaddstr(wle->w->win, 2 + i, w_name_field + 2, buffer);
 
         }
         mvwaddstr(wle->w->win, 1, w_name_field + 1, "\xe2\x94\x82");
-        wattron(wle->w->win, COLOR_PAIR(10));
+        wattron(wle->w->win, COLOR_PAIR(10) | A_UNDERLINE);
         mvwaddstr(wle->w->win, 1, 2, "Name");
         mvwaddstr(wle->w->win, 1, w_name_field + 3, "Size");
-        wattroff(wle->w->win, COLOR_PAIR(10));
+        wattroff(wle->w->win, COLOR_PAIR(10) | A_UNDERLINE);
 
         pthread_mutex_lock(&ctx->lock);
         if (ctx->pos < ctx->num_files) {
@@ -209,16 +217,22 @@ int xc_render_dir_full(void *winlist_e, int w, int h)
 
         if (wle->has_focus) {
                 wattron(wle->w->win, COLOR_PAIR(6));
+        } else {
+                wattron(wle->w->win, A_UNDERLINE);
+        }
                 mvwaddstr(wle->w->win, 2 + ctx->pos - ctx->yoffs, 1, buffer);
                 mvwaddstr(wle->w->win, 2 + ctx->pos - ctx->yoffs,
                           w_name_field + 1, "\xe2\x94\x82");
+        if (wle->has_focus) {
                 wattroff(wle->w->win, COLOR_PAIR(6));
+        } else {
+                wattroff(wle->w->win, A_UNDERLINE);
         }
 
         mvwaddstr(wle->w->win, h, 1, buffer);
         const char *heavy_line = "\xe2\x95\x90";
         for (int i = 0; i < sizeof(buffer); i += 3) {
-                memcpy(buffer + i, heavy_line, 3); 
+                memcpy(buffer + i, heavy_line, 3);
         }
 
         buffer[w*3] = '\0';
